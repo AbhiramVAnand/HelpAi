@@ -2,11 +2,17 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import re
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+cred = credentials.Certificate("./helpai-e27bd-firebase-adminsdk-1ixu1-7b64e84164.json")
+firebase_admin.initialize_app(cred)
+
 
 def scrape_website(url):
     # Send a GET request to the URL
     response = requests.get(url)
-
+    i = 0
     # Check if the request was successful
     if response.status_code == 200:
         # Parse the HTML content of the page
@@ -37,9 +43,13 @@ def scrape_website(url):
 
                 # Print or process the data from the linked page
                 print("Data from linked page:", linked_page_data)
+                upload_data_to_firebase(linked_page_data, i)
+                i = i +1
 
     else:
         print("Failed to retrieve data from the website. Status code:", response.status_code)
+
+    
 
 def scrape_data_from_page(soup):
     # Example scraping logic:
@@ -62,6 +72,15 @@ def is_email(text):
     # Regular expression to match email addresses
     email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
     return bool(re.search(email_pattern, text))
+
+def upload_data_to_firebase(data, i):
+    # Get a database reference
+    db = firestore.client()
+    collection = db.collection('scraped_data')
+    # Push data to Firebase
+    new_data_ref = collection.document(data['title']+str(i)).set(data)
+    print("Data uploaded to Firebase with key:", new_data_ref)
+    i = i+1
 
 if __name__ == "__main__":
     # URL of the website to scrape

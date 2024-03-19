@@ -1,60 +1,90 @@
 import requests
 from bs4 import BeautifulSoup
-import urllib.robotparser
+from urllib.parse import urljoin
+import re
+import firebase_admin
+from firebase_admin import credentials, firestore
 
-# Function to scrape a website and follow redirects
-def scrape_website(url, visited_urls):
-  """
-  Scrapes a website and follows redirects, keeping track of visited URLs.
+cred = credentials.Certificate("./helpai-e27bd-firebase-adminsdk-1ixu1-7b64e84164.json")
+firebase_admin.initialize_app(cred)
 
-  Args:
-      url: The URL of the website to scrape.
-      visited_urls: A set of already visited URLs to avoid infinite loops.
 
-  Returns:
-      A list of dictionaries, where each dictionary contains scraped data from a page.
-  """
-  scraped_data = []
-  robots = urllib.robotparser.RobotFileParser()
-  robots.set_url(f"{url}/robots.txt")
-  robots.read()
+def scrape_website(url):
+    # Send a GET request to the URL
+    response = requests.get(url)
+    i = 0
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the HTML content of the page
+        soup = BeautifulSoup(response.content, 'html.parser')
 
-  # Check robots.txt for allowed scraping
-  if not robots.can_fetch("*", url):
-      print(f"Scraping not allowed by robots.txt for {url}")
-      return scraped_data
+        # Find all links on the page
+        links = soup.find_all('a', href=True)
 
-  try:
-    response = requests.get(url, allow_redirects=True)
-    response.raise_for_status()  # Raise exception for bad status codes
-  except requests.exceptions.RequestException as e:
-    print(f"Error fetching {url}: {e}")
-    return scraped_data
+        # Filter out YouTube links, phone numbers, and emails
+        filtered_links = [link['href'] for link in links if not is_youtube_link(link['href']) and not is_phone_number(link['href']) and not is_email(link['href'])]
 
-  soup = BeautifulSoup(response.content, "html.parser")
+        # Loop through each filtered link
+        for link in filtered_links:
+            # Get the absolute URL of the link
+            absolute_url = urljoin(url, link)
 
-  # Extract data from the current page (implementation depends on website structure)
-  # ... your logic to extract data from the current page ...
-  # data = {"title": soup.title.string, "content": ...}
-  # scraped_data.append(data)
+            # Send a GET request to the linked page
+            linked_page_response = requests.get(absolute_url)
 
-  # Find all links on the page
-  links = soup.find_all("a", href=True)
+            # Check if the request was successful
+            if linked_page_response.status_code == 200:
+                # Parse the HTML content of the linked page
+                linked_soup = BeautifulSoup(linked_page_response.content, 'html.parser')
 
-  # Follow links that are not already visited and within allowed domain
-  for link in links:
-    href = link["href"]
-    print(href)
-    #if href and href not in visited_urls and robots.can_fetch("*", href):
-      #visited_urls.add(href)
-      #scraped_data.extend(scrape_website(href, visited_urls.copy()))
+                # Scrape data from the linked page
+                # (replace this part with your specific scraping logic)
+                linked_page_data = scrape_data_from_page(linked_soup)
 
-  return "scraped_data"
+                # Print or process the data from the linked page
+                print("Data from linked page:", linked_page_data)
+                upload_data_to_firebase(linked_page_data, i)
+                i = i +1
 
-# Starting URL and empty set for visited URLs
-start_url = "https://gecskp.ac.in/"  # Replace with your target website
-visited_urls = set()
+    else:
+        print("Failed to retrieve data from the website. Status code:", response.status_code)
 
-# Scrape the website and print the extracted data (modify to handle data)
-scraped_data = scrape_website(start_url, visited_urls)
-print(f"Scraped data: {scraped_data}")
+    
+
+def scrape_data_from_page(soup):
+    # Example scraping logic:
+    # Find and extract data from specific elements on the page
+    # (replace this with your specific scraping logic)
+    data = {}
+    data['title'] = soup.title.text.strip()
+    data['paragraphs'] = [p.text.strip() for p in soup.find_all('p')]
+    return data
+
+def is_youtube_link(link):
+    return 'youtube.com' in link or 'youtu.be' in link
+
+def is_phone_number(text):
+    # Regular expression to match phone numbers
+    phone_pattern = r'\b(?:\d[ -]?){9,}\b'
+    return bool(re.search(phone_pattern, text))
+
+def is_email(text):
+    # Regular expression to match email addresses
+    email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    return bool(re.search(email_pattern, text))
+
+def upload_data_to_firebase(data, i):
+    # Get a database reference
+    db = firestore.client()
+    collection = db.collection('scraped_data')
+    # Push data to Firebase
+    new_data_ref = collection.document(data['title']+str(i)).set(data)
+    print("Data uploaded to Firebase with key:", new_data_ref)
+    i = i+1
+
+if __name__ == "__main__":
+    # URL of the website to scrape
+    website_url = "https://gecskp.ac.in/"
+
+    # Call the function to scrape the website
+    scrape_website(website_url)
