@@ -1,8 +1,10 @@
+#Script that scrapes datas without any errors and write them onto a text file
+
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
-def scrape_website(url, visited_urls=set()):
+def scrape_website(url, visited_urls=set(), output_file="scraped_data.txt"):
     # Check if URL has already been visited to avoid infinite loops
     if url in visited_urls:
         return
@@ -13,21 +15,18 @@ def scrape_website(url, visited_urls=set()):
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')
             linked_page_data = scrape_data_from_page(soup)
-            print("Data from linked page:", linked_page_data)
-            print(linked_page_data)
             
-            
-            # Print other relevant data from the page
-            # Example: paragraphs = soup.find_all('p')
-            #          for paragraph in paragraphs:
-            #              print("Paragraph:", paragraph.text.strip())
-
+            # Write scraped data to a text file
+            with open(output_file, 'a', encoding='utf-8') as file:
+                file.write("Data from linked page: {}\n".format(url))
+                file.write(str(linked_page_data) + "\n\n")
+                
             # Recursively follow links on the page
             for link in soup.find_all('a', href=True):
                 next_url = urljoin(url, link['href'])
                 # Check if the URL contains "etlab"
-                if 'etlab' not in next_url:
-                    scrape_website(next_url, visited_urls)
+                if 'gecskp' in next_url:
+                    scrape_website(next_url, visited_urls, output_file)
 
     except Exception as e:
         print("Error occurred while scraping", url)
@@ -46,4 +45,7 @@ def scrape_data_from_page(soup):
 
 if __name__ == "__main__":
     college_website_url = "https://gecskp.ac.in/"  # Replace with your college's website URL
-    scrape_website(college_website_url)
+    output_file = "scraped_data.txt"  # Output file name
+    # Clear existing content of the output file
+    open(output_file, 'w').close()
+    scrape_website(college_website_url, output_file=output_file)
