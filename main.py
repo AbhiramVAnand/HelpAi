@@ -8,11 +8,9 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 from langchain_community.vectorstores import FAISS
 
+from dotenv import load_dotenv
 
-
-os.environ["GOOGLE_API_KEY"] = "AIzaSyCz8BIJOrUQLKyUoBxf0ReDThKDkQV62C8"
-
-
+load_dotenv()
 
 loader = TextLoader("./scraped_data.txt")  # Modified loader for text file
 
