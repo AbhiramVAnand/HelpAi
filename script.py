@@ -13,13 +13,13 @@ def scrape_website(url, visited_urls=set(), output_file="scraped_data.txt"):
     try:
         response = requests.get(url)
         if response.status_code == 200:
+            print(url)
             soup = BeautifulSoup(response.content, 'html.parser')
             linked_page_data = scrape_data_from_page(soup)
             
             # Write scraped data to a text file
             with open(output_file, 'a', encoding='utf-8') as file:
-                file.write("Data from linked page: {}\n".format(url))
-                file.write(str(linked_page_data) + "\n\n")
+                file.write(str(linked_page_data))
                 
             # Recursively follow links on the page
             for link in soup.find_all('a', href=True):
@@ -34,13 +34,23 @@ def scrape_website(url, visited_urls=set(), output_file="scraped_data.txt"):
 
 
 def scrape_data_from_page(soup):
-    # Example scraping logic:
-    # Find and extract data from specific elements on the page
-    # (replace this with your specific scraping logic)
-    data = {}
-    data['title'] = soup.title.text.strip()
-    data['paragraphs'] = [p.text.strip() for p in soup.find_all('p')]
-    return data
+    # Initialize an empty string to store the formatted data
+    formatted_data = ''
+
+    # Find all <p> tags in the soup
+    paragraphs = soup.find_all('p')
+
+    # Iterate over each <p> tag
+    for p in paragraphs:
+        # Extract the text from the <p> tag and strip leading/trailing whitespace
+        paragraph_text = p.text.strip()
+        # Check if the paragraph is not empty
+        if paragraph_text:
+            # Append the formatted paragraph text to the string with a newline character
+            formatted_data += paragraph_text + "\n "
+
+    # Return the formatted data
+    return formatted_data
 
 
 if __name__ == "__main__":
