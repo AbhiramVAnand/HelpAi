@@ -1,8 +1,16 @@
 #Script that scrapes datas without any errors and write them onto a text file
 
+import os
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_community.vectorstores import FAISS
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def scrape_website(url, visited_urls=set(), output_file="scraped_data.txt"):
     # Check if URL has already been visited to avoid infinite loops

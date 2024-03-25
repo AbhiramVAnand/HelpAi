@@ -1,5 +1,4 @@
 import os
-
 from langchain_community.document_loaders import TextLoader  # Modified import
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
