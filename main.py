@@ -11,9 +11,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-loader = TextLoader("./scraped_data.txt")  # Modified loader for text file
+loader = TextLoader("./scraped_data.txt")  
 
-pages = loader.load_and_split()  # Assuming each line represents a page
+pages = loader.load_and_split()  
 
 
 
@@ -21,9 +21,13 @@ embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 db = FAISS.from_documents(pages, embeddings)
 
+# query = "Who is HoD of EEE Department? Get me her contact details."
 
+# query = "Location of the college"
 
-query = "Who is HoD of CSE Department? Get me her contact details."
+query = "List all Head of departments in the colege"
+
+#query = "How to reach GEC Sreekrishnapuram"
 
 docs = db.similarity_search(query)
 

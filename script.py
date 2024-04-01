@@ -62,8 +62,8 @@ def scrape_data_from_page(soup):
 
 
 if __name__ == "__main__":
-    college_website_url = "https://gecskp.ac.in/"  # Replace with your college's website URL
+    website_url = "https://gecskp.ac.in/"  # Replace with your college's website URL
     output_file = "scraped_data.txt"  # Output file name
     # Clear existing content of the output file
     open(output_file, 'w').close()
-    scrape_website(college_website_url, output_file=output_file)
+    scrape_website(website_url, output_file=output_file)
