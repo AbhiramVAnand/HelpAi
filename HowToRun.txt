@@ -1,0 +1,2 @@
+- Run script.py to scrape data and store it in scraped_data.txt file.
+- Run main.py to chat with the bot. // Questions are hardcoded for now.
