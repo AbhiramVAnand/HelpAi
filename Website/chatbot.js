@@ -1,9 +1,8 @@
 $(document).ready(function() {
 
 	// Credentials
-	// var baseUrl = "http://127.0.0.1:5000/ask";
+	var baseUrl = "http://127.0.0.1:5000/ask";
 	// var accessToken = "553ab6017e584e0fa351952c8c9ca956";
-	const value = document.currentScript.getAttribute('baseurl'); 
 	//---------------------------------- Add dynamic html bot content(Widget style) ----------------------------
 	// You can also add the html content in html page and still it will work!
 	var mybot = '<div class="container" style="padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;">'+
