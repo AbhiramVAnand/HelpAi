@@ -3,15 +3,17 @@ $(document).ready(function() {
 	// Credentials
 	var baseUrl = "http://127.0.0.1:5000/ask";
 	// var accessToken = "553ab6017e584e0fa351952c8c9ca956";
-
+	const value = document.currentScript.getAttribute('baseurl'); 
 	//---------------------------------- Add dynamic html bot content(Widget style) ----------------------------
 	// You can also add the html content in html page and still it will work!
 	var mybot = '<div class="container" style="padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;">'+
 					'<div class="chatCont" id="chatCont">'+
 								'<div class="bot_profile">'+
-									'<img src="assets/img/bot2.svg" class="bot_p_img">'+
+									'<img src="https://imgs.search.brave.com/BIliQ0SZarkqkARtMGDnvWZshFX0TcHww2Gg9d_1gpg/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzIyLzM4LzMy/LzM2MF9GXzMyMjM4/MzI3N194Y1h6MUk5/dk9GdGRrN3BsaHNS/UXlqT0RqMDhpTlN3/Qi5qcGc" class="bot_p_img">'+
 									'<div class="close">'+
-										'<i class="fa fa-times" aria-hidden="true"></i>'+
+										'<svg width="32" height="32" viewBox="0 0 320 512">'+
+											'<path fill="black" d="M190.5 145.5l120-120c12.5-12.5 12.5-32.75 0-45.25l-120-120c-12.5-12.5 -32.75-12.5 -45.25 0l-45.25 45.25c-12.5 12.5 -12.5 32.75 0 45.25l120 120l-120 120c-12.5 12.5 -12.5 32.75 0 45.25l45.25 45.25c12.5 12.5 32.75 12.5 45.25 0l120-120l120 120c12.5 12.5 32.75 12.5 45.25 0l45.25-45.25c12.5-12.5 12.5-32.75 0-45.25l-120-120z"/>'+
+								  		'</svg>'+
 									'</div>'+
 								'</div><!--bot_profile end-->'+
 								'<div id="result_div" class="resultDiv"></div>'+
@@ -28,7 +30,7 @@ $(document).ready(function() {
 							'<div class="profile_div">'+
 								'<div class="row">'+
 									'<div class="col-hgt">'+
-										'<img src="assets/img/bot2.svg" class="img-circle img-profile">'+
+										'<img src="https://imgs.search.brave.com/BIliQ0SZarkqkARtMGDnvWZshFX0TcHww2Gg9d_1gpg/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzIyLzM4LzMy/LzM2MF9GXzMyMjM4/MzI3N194Y1h6MUk5/dk9GdGRrN3BsaHNS/UXlqT0RqMDhpTlN3/Qi5qcGc" class="img-circle img-profile">'+
 									'</div><!--col-hgt end-->'+
 								'</div><!--row end-->'+
 							'</div>'+

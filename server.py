@@ -21,7 +21,7 @@ CORS(app)
 loader = TextLoader("./scrapedData.txt")
 pages = loader.load_and_split()
 # embeddings = HuggingFaceEmbeddings(model_name="gtr-t5-xxl")
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2")
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 db = FAISS.from_documents(pages, embeddings)
 
 @app.route("/init")
@@ -35,13 +35,12 @@ def init():
 
     def scrape_in_thread():
         scrape_website(url, output_file, domain_name)
-
+ # Gateway Timeout
     thread = threading.Thread(target=scrape_in_thread)
     thread.start()
-    thread.join(timeout=600)
+    thread.join(timeout=120)
     if thread.is_alive():
-        return "Scraping timed out after 2 minutes", 504  # Gateway Timeout
-
+        return {"Response":"Scraping timed out after 2 minutes"}, 200
 
 def answer_query(user_query):
     docs = db.similarity_search(user_query)
@@ -70,13 +69,12 @@ def chat():
     answer = answer_query(user_query)
     return answer, 200
 
-@app.route("/create")
 def create():
     loader = TextLoader("./scrapedData.txt")
     pages = loader.load_and_split()
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2")
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     db = FAISS.from_documents(pages, embeddings)
-    return "answer", 200
+    return db
 
 
 
