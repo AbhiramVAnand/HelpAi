@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
 	// Credentials
-	var baseUrl = "http://127.0.0.1:5000/ask";
+	// var baseUrl = "http://127.0.0.1:5000/ask";
 	// var accessToken = "553ab6017e584e0fa351952c8c9ca956";
 	const value = document.currentScript.getAttribute('baseurl'); 
 	//---------------------------------- Add dynamic html bot content(Widget style) ----------------------------
