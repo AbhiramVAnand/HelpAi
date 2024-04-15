@@ -34,5 +34,15 @@ def answer():
     else:
         return "405 Method Not Allowed", 405
 
+
+
+@app.route("/init")
+def init():
+    user_query = request.args.get('query')
+    if user_query is None:
+        return "Error: Missing 'query' in request body", 400
+    answer = answer_query(user_query)
+    return answer, 200
+
 if __name__ == "__main__":
-  app.run(debug=True,port=5002)
+  app.run(debug=True,port=5000)

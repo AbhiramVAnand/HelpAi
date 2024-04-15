@@ -1,22 +1,28 @@
+from flask import Flask, request
+from flask_cors import CORS
 import os
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from langchain_community.document_loaders import TextLoader  # Modified import
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
-from langchain_community.document_loaders import TextLoader 
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from dotenv import load_dotenv
 import urllib.parse
 import threading
 import time
 
-
 load_dotenv()
 
-from flask import Flask, request, jsonify
-
 app = Flask(__name__)
+CORS(app)
+
+loader = TextLoader("./scrapedData.txt")
+pages = loader.load_and_split()
+# embeddings = HuggingFaceEmbeddings(model_name="gtr-t5-xxl")
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2")
+db = FAISS.from_documents(pages, embeddings)
 
 @app.route("/init")
 def init():
@@ -32,40 +38,47 @@ def init():
 
     thread = threading.Thread(target=scrape_in_thread)
     thread.start()
-    thread.join(timeout=120)
+    thread.join(timeout=600)
     if thread.is_alive():
         return "Scraping timed out after 2 minutes", 504  # Gateway Timeout
 
 
-@app.route("/scrape")
-def scrape():
+def answer_query(user_query):
+    docs = db.similarity_search(user_query)
+    qa_prompt = "Use the following pieces of context to answer the user's question. If you don't know the answer, just say that you don't know, don't try to make up an answer.----------------"
+    content = "\n".join([x.page_content for x in docs])
+    input_text = qa_prompt + "\nContext:" + content + "\nUser question:\n" + user_query
+    llm = ChatGoogleGenerativeAI(model="gemini-pro")
+    return llm.invoke(input_text).content
+
+@app.route("/ask", methods=["POST"])
+def answer():
     if request.method == "POST":
-        data = request.json
-        if data is None or "url" not in data:
-            return "Error: Missing 'url' in request body", 400
-        url = data["url"]
-        domain_name = extract_domain_name(url)
-        output_file = "Scraa.txt"
-        open(output_file, 'w').close()
-
-        def scrape_in_thread():
-            scrape_website(url, output_file, domain_name)
-
-        thread = threading.Thread(target=scrape_in_thread)
-        thread.start()
-        thread.join(timeout=120)
-        if thread.is_alive():
-            return "Scraping timed out after 2 minutes", 504  # Gateway Timeout
-        return "Scraping initiated!", 202  # Accepted (background process)
+        user_query = request.json.get('query')
+        if user_query is None:
+            return "Error: Missing 'query' in request body", 400
+        answer = answer_query(user_query)
+        return {"answer":answer}, 200
     else:
         return "405 Method Not Allowed", 405
 
+@app.route("/chat")
+def chat():
+    user_query = request.args.get('query')
+    if user_query is None:
+        return "Error: Missing 'query' in request body", 400
+    answer = answer_query(user_query)
+    return answer, 200
 
-@app.route("/gen")
-def gen():
-    exec(open("chat_server.py").read())
-    return "Done",200
-    
+@app.route("/create")
+def create():
+    loader = TextLoader("./scrapedData.txt")
+    pages = loader.load_and_split()
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2")
+    db = FAISS.from_documents(pages, embeddings)
+    return "answer", 200
+
+
 
 def scrape_website(url, output_file,domain_name, visited_urls=set()):
     # Check if URL has already been visited to avoid infinite loops
@@ -127,7 +140,4 @@ def extract_domain_name(link):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
-
-
-
+    app.run(debug=True, port=5000)
