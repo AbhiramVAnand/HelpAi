@@ -36,6 +36,31 @@ def init():
     if thread.is_alive():
         return "Scraping timed out after 2 minutes", 504  # Gateway Timeout
 
+
+@app.route("/scrape")
+def scrape():
+    if request.method == "POST":
+        data = request.json
+        if data is None or "url" not in data:
+            return "Error: Missing 'url' in request body", 400
+        url = data["url"]
+        domain_name = extract_domain_name(url)
+        output_file = "Scraa.txt"
+        open(output_file, 'w').close()
+
+        def scrape_in_thread():
+            scrape_website(url, output_file, domain_name)
+
+        thread = threading.Thread(target=scrape_in_thread)
+        thread.start()
+        thread.join(timeout=120)
+        if thread.is_alive():
+            return "Scraping timed out after 2 minutes", 504  # Gateway Timeout
+        return "Scraping initiated!", 202  # Accepted (background process)
+    else:
+        return "405 Method Not Allowed", 405
+
+
 @app.route("/gen")
 def gen():
     exec(open("chat_server.py").read())
@@ -56,16 +81,15 @@ def scrape_website(url, output_file,domain_name, visited_urls=set()):
             linked_page_data = scrape_data_from_page(soup)
             
             # Write scraped data to a text file
+            output_file=f"scrapedData.txt"
             with open(output_file, 'a', encoding='utf-8') as file:
                 file.write(str(linked_page_data))
-                
             # Recursively follow links on the page
             for link in soup.find_all('a', href=True):
                 next_url = urljoin(url, link['href'])
                 # Check if the URL contains "etlab"
                 if domain_name in next_url:
                     scrape_website(next_url, visited_urls, output_file)
-
     except Exception as e:
         print("Error occurred while scraping", url)
         print(e)

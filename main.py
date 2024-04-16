@@ -17,15 +17,15 @@ pages = loader.load_and_split()
 
 
 
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2")
 
 db = FAISS.from_documents(pages, embeddings)
 
-# query = "Who is HoD of EEE Department? Get me her contact details."
+#query = "Who is HoD of CSE Department? Get me her contact details."
 
-# query = "Location of the college"
+query = "Location of the college"
 
-query = "List all Head of departments in the colege"
+#query = "List all Head of departments in the colege"
 
 #query = "How to reach GEC Sreekrishnapuram"
 
