@@ -33,7 +33,8 @@ $(document).ready(function() {
 									'</div><!--col-hgt end-->'+
 								'</div><!--row end-->'+
 							'</div>'+
-					'</div>'+'<!--profile_div end-->';
+					'</div>'+'<!--profile_div end-->'+
+		'<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> ';
 
 	$("mybot").html(mybot);
 
