@@ -33,10 +33,19 @@ $(document).ready(function() {
 									'</div><!--col-hgt end-->'+
 								'</div><!--row end-->'+
 							'</div>'+
-					'</div>'+'<!--profile_div end-->'+
-		'<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> ';
+					'</div>'+'<!--profile_div end-->';
 
 	$("mybot").html(mybot);
+	function addScript(src) {
+  		const script = document.createElement('script');
+  		script.src = src; // Set the script source URL
+  		script.async = true; // Optional: Add async attribute for asynchronous loading (recommended)
+
+  		// Append the script to the body element, ensuring it's added to the end
+  		document.body.appendChild(script);
+	}
+	// Example usage: Load jQuery dynamically
+	addScript('https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js');
 
 	// ------------------------------------------ Toggle chatbot -----------------------------------------------
 	$('.profile_div').click(function() {
