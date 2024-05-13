@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
 	// Credentials
-	var baseUrl = "http://127.0.0.1:5000/ask";
+	var baseUrl = "https://f13e-103-179-196-164.ngrok-free.app/ask";
 	
 	var mybot = '<div class="container" style="padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;">'+
 					'<div class="chatCont" id="chatCont">'+
