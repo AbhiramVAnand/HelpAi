@@ -139,8 +139,6 @@ $(document).ready(function() {
 	function main(data) {
 		var action = data.result.action;
 		var speech = data.result.fulfillment.speech;
-		// use incomplete if u use required in api.ai questions in intent
-		// check if actionIncomplete = false
 		var incomplete = data.result.actionIncomplete;
 		if(data.result.fulfillment.messages) { // check if messages are there
 			if(data.result.fulfillment.messages.length > 0) { //check if quick replies are there
@@ -148,18 +146,8 @@ $(document).ready(function() {
 			}
 		}
 		switch(action) {
-			// case 'your.action': // set in api.ai
-			// Perform operation/json api call based on action
-			// Also check if (incomplete = false) if there are many required parameters in an intent
-			// if(suggestions) { // check if quick replies are there in api.ai
-			//   addSuggestion(suggestions);
-			// }
-			// break;
 			default:
 				setBotResponse(speech);
-				if(suggestions) { // check if quick replies are there in api.ai
-					addSuggestion(suggestions);
-				}
 				break;
 		}
 	}
@@ -201,37 +189,4 @@ $(document).ready(function() {
 		terminalResultsDiv.scrollTop = terminalResultsDiv.scrollHeight;
 	}
 
-
-	//---------------------------------------- Ascii Spinner ---------------------------------------------------
-	function showSpinner() {
-		$('.spinner').show();
-	}
-	function hideSpinner() {
-		$('.spinner').hide();
-	}
-
-
-	//------------------------------------------- Suggestions --------------------------------------------------
-	function addSuggestion(textToAdd) {
-		setTimeout(function() {
-			var suggestions = textToAdd.replies;
-			var suggLength = textToAdd.replies.length;
-			$('<p class="suggestion"></p>').appendTo('#result_div');
-			$('<div class="sugg-title">Suggestions: </div>').appendTo('.suggestion');
-			// Loop through suggestions
-			for(i=0;i<suggLength;i++) {
-				$('<span class="sugg-options">'+suggestions[i]+'</span>').appendTo('.suggestion');
-			}
-			scrollToBottomOfResults();
-		}, 1000);
-	}
-
-	// on click of suggestions get value and send to API.AI
-	$(document).on("click", ".suggestion span", function() {
-		var text = this.innerText;
-		setUserResponse(text);
-		send(text);
-		$('.suggestion').remove();
-	});
-	// Suggestions end -----------------------------------------------------------------------------------------
 });
