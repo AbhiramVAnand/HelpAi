@@ -1,16 +1,16 @@
 $(document).ready(function() {
 
 	// Credentials
-	var baseUrl = "http://127.0.0.1:5000/ask";
+	var baseUrl = "https://f13e-103-179-196-164.ngrok-free.app/ask";
 	
-	var mybot = '<div class="container" style="padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;">'+
+	var mybot = '<div class="container">'+
 					'<div class="chatCont" id="chatCont">'+
 								'<div class="bot_profile">'+
 									'<img src="https://imgs.search.brave.com/BIliQ0SZarkqkARtMGDnvWZshFX0TcHww2Gg9d_1gpg/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzIyLzM4LzMy/LzM2MF9GXzMyMjM4/MzI3N194Y1h6MUk5/dk9GdGRrN3BsaHNS/UXlqT0RqMDhpTlN3/Qi5qcGc" class="bot_p_img">'+
 									'<div class="close">'+
-										'<svg width="32" height="32" viewBox="0 0 320 512">'+
-											'<path fill="black" d="M190.5 145.5l120-120c12.5-12.5 12.5-32.75 0-45.25l-120-120c-12.5-12.5 -32.75-12.5 -45.25 0l-45.25 45.25c-12.5 12.5 -12.5 32.75 0 45.25l120 120l-120 120c-12.5 12.5 -12.5 32.75 0 45.25l45.25 45.25c12.5 12.5 32.75 12.5 45.25 0l120-120l120 120c12.5 12.5 32.75 12.5 45.25 0l45.25-45.25c12.5-12.5 12.5-32.75 0-45.25l-120-120z"/>'+
-								  		'</svg>'+
+									'<svg width="60" height="72" viewBox="0 0 30 300" fill="none" xmlns="http://www.w3.org/2000/svg">'+
+										'<path d="M49.5 60.1903L12.6103 97.08C11.23 98.4603 9.47338 99.1504 7.3403 99.1504C5.20722 99.1504 3.45057 98.4603 2.07034 97.08C0.690111 95.6998 0 93.9432 0 91.8101C0 89.677 0.690111 87.9203 2.07034 86.5401L38.9601 49.6504L2.07034 12.7607C0.690111 11.3804 0 9.62377 0 7.49069C0 5.35761 0.690111 3.60096 2.07034 2.22073C3.45057 0.840502 5.20722 0.150391 7.3403 0.150391C9.47338 0.150391 11.23 0.840502 12.6103 2.22073L49.5 39.1105L86.3897 2.22073C87.77 0.840502 89.5266 0.150391 91.6597 0.150391C93.7928 0.150391 95.5494 0.840502 96.9296 2.22073C98.3099 3.60096 99 5.35761 99 7.49069C99 9.62377 98.3099 11.3804 96.9296 12.7607L60.0399 49.6504L96.9296 86.5401C98.3099 87.9203 99 89.677 99 91.8101C99 93.9432 98.3099 95.6998 96.9296 97.08C95.5494 98.4603 93.7928 99.1504 91.6597 99.1504C89.5266 99.1504 87.77 98.4603 86.3897 97.08L49.5 60.1903Z" fill="black"/>'+
+									'</svg>'+									
 									'</div>'+
 								'</div><!--bot_profile end-->'+
 								'<div id="result_div" class="resultDiv"></div>'+
