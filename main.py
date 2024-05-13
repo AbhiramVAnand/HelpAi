@@ -4,8 +4,8 @@ from langchain_community.document_loaders import TextLoader  # Modified import
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
 from langchain_google_genai import ChatGoogleGenerativeAI
-
-from langchain_community.vectorstores import FAISS
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain.vectorstores import FAISS
 
 from dotenv import load_dotenv
 
@@ -13,24 +13,28 @@ load_dotenv()
 
 loader = TextLoader("./scraped_data.txt")  
 
-pages = loader.load_and_split()  
-
-
+pages = loader.load()  
 
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2")
 
-db = FAISS.from_documents(pages, embeddings)
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size = 1200,
+    chunk_overlap = 200,
+    length_function = len,
+)
+docs_chunks = text_splitter.split_documents(pages)
 
-#query = "Who is HoD of CSE Department? Get me her contact details."
+db = FAISS.from_documents(docs_chunks, embeddings)
 
-query = "Location of the college"
+#query = "Who is HoD of ECE Department? Get me her contact details."
+
+#query = "Location of the college"
 
 #query = "List all Head of departments in the colege"
 
-#query = "How to reach GEC Sreekrishnapuram"
+query = "How to reach GEC Sreekrishnapuram"
 
 docs = db.similarity_search(query)
-
 
 content = "\n".join([x.page_content for x in docs])
 
@@ -42,4 +46,4 @@ llm = ChatGoogleGenerativeAI(model="gemini-pro")
 
 result = llm.invoke(input_text)
 
-print(result.content)
+# print(result.content)

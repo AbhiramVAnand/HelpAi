@@ -1,0 +1,39 @@
+.home-container {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center elements horizontally */
+    justify-content: center; /* Center elements vertically within the container (optional) */
+    margin: 0 auto; /* Center the container horizontally within the viewport */
+    width: fit-content; /* Adjust width as needed */
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  input[type="text"] {
+    width: 100%; /* Adjust width as needed */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Include padding in width calculation */
+  }
+  
+  button[type="submit"] {
+    background-color: #007bff; /* Blue background color */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.2s ease-in-out; /* Smooth transition on hover */
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #0069d9; /* Slightly darker blue for hover effect */
+  }
+  
+  .home-container p {
+    text-align: center; /* Center loading text */
+  }
