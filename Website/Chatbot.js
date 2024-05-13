@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
 	// Credentials
-	var baseUrl = "https://f13e-103-179-196-164.ngrok-free.app/ask";
+	var baseUrl = "http://127.0.0.1:5000/ask";
 	
 	var mybot = '<div class="container" style="padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;">'+
 					'<div class="chatCont" id="chatCont">'+
@@ -33,6 +33,7 @@ $(document).ready(function() {
 							'</div>'+
 					'</div>'+'<!--profile_div end-->';
 
+	$("mybot").html(mybot);
 
 	// ------------------------------------------ Toggle chatbot -----------------------------------------------
 	$('.profile_div').click(function() {
@@ -198,37 +199,4 @@ $(document).ready(function() {
 		terminalResultsDiv.scrollTop = terminalResultsDiv.scrollHeight;
 	}
 
-
-	//---------------------------------------- Ascii Spinner ---------------------------------------------------
-	function showSpinner() {
-		$('.spinner').show();
-	}
-	function hideSpinner() {
-		$('.spinner').hide();
-	}
-
-
-	//------------------------------------------- Suggestions --------------------------------------------------
-	function addSuggestion(textToAdd) {
-		setTimeout(function() {
-			var suggestions = textToAdd.replies;
-			var suggLength = textToAdd.replies.length;
-			$('<p class="suggestion"></p>').appendTo('#result_div');
-			$('<div class="sugg-title">Suggestions: </div>').appendTo('.suggestion');
-			// Loop through suggestions
-			for(i=0;i<suggLength;i++) {
-				$('<span class="sugg-options">'+suggestions[i]+'</span>').appendTo('.suggestion');
-			}
-			scrollToBottomOfResults();
-		}, 1000);
-	}
-
-	// on click of suggestions get value and send to API.AI
-	$(document).on("click", ".suggestion span", function() {
-		var text = this.innerText;
-		setUserResponse(text);
-		send(text);
-		$('.suggestion').remove();
-	});
-	// Suggestions end -----------------------------------------------------------------------------------------
 });
