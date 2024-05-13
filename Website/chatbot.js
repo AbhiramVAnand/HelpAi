@@ -1,8 +1,10 @@
 $(document).ready(function() {
 
 	// Credentials
-	var baseUrl = "http://127.0.0.1:5000/ask";
-	
+	var baseUrl = "https://f13e-103-179-196-164.ngrok-free.app/ask";
+	// var accessToken = "553ab6017e584e0fa351952c8c9ca956";
+	//---------------------------------- Add dynamic html bot content(Widget style) ----------------------------
+	// You can also add the html content in html page and still it will work!
 	var mybot = '<div class="container" style="padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;">'+
 					'<div class="chatCont" id="chatCont">'+
 								'<div class="bot_profile">'+
@@ -137,8 +139,6 @@ $(document).ready(function() {
 	function main(data) {
 		var action = data.result.action;
 		var speech = data.result.fulfillment.speech;
-		// use incomplete if u use required in api.ai questions in intent
-		// check if actionIncomplete = false
 		var incomplete = data.result.actionIncomplete;
 		if(data.result.fulfillment.messages) { // check if messages are there
 			if(data.result.fulfillment.messages.length > 0) { //check if quick replies are there
@@ -146,18 +146,8 @@ $(document).ready(function() {
 			}
 		}
 		switch(action) {
-			// case 'your.action': // set in api.ai
-			// Perform operation/json api call based on action
-			// Also check if (incomplete = false) if there are many required parameters in an intent
-			// if(suggestions) { // check if quick replies are there in api.ai
-			//   addSuggestion(suggestions);
-			// }
-			// break;
 			default:
 				setBotResponse(speech);
-				if(suggestions) { // check if quick replies are there in api.ai
-					addSuggestion(suggestions);
-				}
 				break;
 		}
 	}
