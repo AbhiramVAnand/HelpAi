@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import firebase from "firebase/compat/app"
 import "firebase/compat/auth"
 import { useNavigate } from 'react-router-dom'; // For navigation
+import './Login.css'
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,16 +12,24 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const auth = await firebase.auth().signInWithEmailAndPassword(email, password);
-      navigate('/home'); // Redirect to homepage on success
+      if(password != null  && email !=null )
+      {
+        const auth = await firebase.auth().signInWithEmailAndPassword(email, password);
+        if(auth.user){
+          alert("Login Successfull");
+          navigate('/home');
+        }
+      }
     } catch (error) {
       console.error(error);
       // Handle login errors (display error message)
+      alert("Invalid credentials");
     }
   };
 
   return (
     <div className="login-container">
+      <center>
       <h1>Login</h1>
       <form onSubmit={handleLogin}>
         <label htmlFor="email">Email:</label>
@@ -29,6 +38,7 @@ const Login = () => {
         <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button type="submit">Login</button>
       </form>
+      </center>
     </div>
   );
 };

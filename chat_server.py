@@ -3,8 +3,16 @@ import os
 from langchain_community.document_loaders import TextLoader  # Modified import
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from dotenv import load_dotenv
+
+# For errors regarding debugging
+
+import langchain
+
+# Set the debug flag to True to enable debugging
+langchain.debug = True
 
 load_dotenv()
 
@@ -12,13 +20,21 @@ app = Flask(__name__)
 
 # Load data and create database (place outside a function for efficiency)
 loader = TextLoader("./scrapedData.txt")
-pages = loader.load_and_split()
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-db = FAISS.from_documents(pages, embeddings)
+pages = loader.load()
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2")
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size = 1200,
+    chunk_overlap = 200,
+    length_function = len,
+)
+docs_chunks = text_splitter.split_documents(pages)
+
+db = FAISS.from_documents(docs_chunks, embeddings)
 
 def answer_query(user_query):
+    docs = db.similarity_search(user_query)
+    content = "\n".join([x.page_content for x in docs])
     qa_prompt = "Use the following pieces of context to answer the user's question. If you don't know the answer, just say that you don't know, don't try to make up an answer.----------------"
-    content = "\n".join([x.page_content for x in db.similarity_search(user_query)])
     input_text = qa_prompt + "\nContext:" + content + "\nUser question:\n" + user_query
     llm = ChatGoogleGenerativeAI(model="gemini-pro")
     return llm.invoke(input_text).content

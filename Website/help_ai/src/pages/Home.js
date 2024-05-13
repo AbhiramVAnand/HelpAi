@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
+import "./Home.css"
 
 const Home = () => {
   const [userInput, setUserInput] = useState('');
@@ -35,15 +36,16 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <h1>Welcome!</h1>
+      <h1>HelpAi!</h1>
       <input
         type="text"
         value={userInput}
         onChange={(e) => setUserInput(e.target.value)}
         placeholder="Paste your link here"
       />
-      <button onClick={handleSubmit}>Start</button>
-      {isLoading && <p>Loading...</p>} {/* Show loading text if isLoading is true */}
+      <br/>
+      <button type="submit" onClick={handleSubmit}>Start</button>
+      {isLoading && <p style={{color:'white'}}>Loading...</p>} {/* Show loading text if isLoading is true */}
     </div>
   );
 };
